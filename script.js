@@ -22,30 +22,27 @@ navMobile.querySelectorAll('a').forEach(link => {
 // Sticky header shadow on scroll
 const header = document.querySelector('.site-header');
 window.addEventListener('scroll', () => {
-  header.style.boxShadow = window.scrollY > 8 ? '0 4px 18px rgba(22,48,43,0.08)' : 'none';
+  header.style.boxShadow = window.scrollY > 8 ? '0 4px 16px rgba(14,59,52,0.08)' : 'none';
 });
 
-// Vertebra dots along the spine path, appearing in sequence after the line draws
-const path = document.getElementById('spinePath');
-const group = document.getElementById('vertebraGroup');
+// FAQ accordion
+document.querySelectorAll('.faq-item').forEach(item => {
+  const btn = item.querySelector('.faq-q');
+  btn.addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(open => {
+      if (open !== item) {
+        open.classList.remove('open');
+        open.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+      }
+    });
+    item.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+  });
+});
 
-if (path && group) {
-  const total = path.getTotalLength();
-  const count = 9;
-  for (let i = 0; i <= count; i++) {
-    const pt = path.getPointAtLength((total / count) * i);
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle.setAttribute('cx', pt.x);
-    circle.setAttribute('cy', pt.y);
-    circle.setAttribute('r', 4.5);
-    circle.classList.add('vertebra');
-    circle.style.animationDelay = `${1.6 + i * 0.09}s`;
-    group.appendChild(circle);
-  }
-}
-
-// Reveal service/review cards on scroll
-const revealTargets = document.querySelectorAll('.service-card, .review-card');
+// Gentle scroll reveal for cards
+const revealTargets = document.querySelectorAll('.condition-card, .why-card, .step, .faq-item');
 if ('IntersectionObserver' in window) {
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -55,12 +52,12 @@ if ('IntersectionObserver' in window) {
         io.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.15 });
+  }, { threshold: 0.12 });
 
   revealTargets.forEach(el => {
     el.style.opacity = '0';
-    el.style.transform = 'translateY(16px)';
-    el.style.transition = 'opacity .6s ease, transform .6s ease';
+    el.style.transform = 'translateY(12px)';
+    el.style.transition = 'opacity .5s ease, transform .5s ease';
     io.observe(el);
   });
 }
